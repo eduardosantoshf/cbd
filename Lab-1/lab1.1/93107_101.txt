@@ -1,0 +1,100 @@
+GET key
+OBJECT idletime key
+SET key "JavaScript"
+EXPIRE key 20
+TTL key
+PERSIST key
+TTL key
+Get key
+SET key "Apple"
+PEXPIRE key 1800
+TTL key
+PTTL key
+SET key "Apple"
+PEXPIREAT key 1555555555005
+TTL key
+PTTL key
+SET KEY "Apple"
+EXPIRE key 10
+PTTL key
+SET key "Good"
+PEXPIRE key 3000
+PTTL key
+GET key
+SET w3resource redis
+SET KEY VALUE [EX seconds] [PX milliseconds] [NX|XX]
+SET w3resource redis EX 60 NX
+SET example redis
+GET example
+SET mykey "This is my test key"
+GETRANGE mykey 0 3
+GETRANGE mykey 0 -1
+SET mykey "hello"
+APPEND mykey "w3resource"
+GET mykey 
+HMSET langhash lang1 "PHP" lang2 "JavaScript" lang3 "Python"
+HGET langhash lang1
+HGET langhash lang2
+HGET langhash lang3
+HDEL langhash lang1
+HGET langhash lang1
+HGET langhash lang2
+HGET langhash lang3
+HMSET langhash lang1 "PHP" lang2 "JavaScript" lang3 "Python"
+v
+HGET langhash lang1
+HGET langhash lang2
+HGET langhash lang3
+HDEL langhash lang1 lang2 lang3
+HGET langhash lang1
+HGET langhash lang2
+HGET langhash lang3
+HMSET langhash lang1 "PHP" lang2 "JavaScript" lang3 "Python"
+HEXISTS langhash lang1
+HEXISTS langhash lang4
+HMSET langhash lang1 "PHP" lang2 "JavaScript" lang3 "Python"
+HGET langhash lang1
+HGET langhash lang4
+HMSET langhash lang1 "PHP" lang2 "JavaScript" lang3 "Python"
+HSET langhash lang4 "Golanguage"
+HGETALL langhash
+HSET langhash lang1 "PHP"
+HSET langhash lang2 "Javascript"
+HSET langhash lang3 "Python"
+HSET langhash lang4 "Golanguage"
+HKEYS langhash
+HMSET langhash lang1 "PHP" lang2 "JavaScript" lang3 "Redis"
+HGET langhash lang1
+HGET langhash lang2
+HGET langhash lang3
+ 
+SADD People:Agoiros:Members "DS" "Mendes" "Batista" "Dias"
+LPUSH mycolor1 white black red blue
+LRANGE mycolor1 0 -1
+LPUSH mycolor1 white black red blue
+LRANGE mycolor1 0 -1
+LLEN mycolor1
+LPUSH mycolor1 white black red blue
+LRANGE mycolor1 0 -1
+LPOP mycolor1
+LRANGE mycolor1 0 -1
+LPUSH mycolor1 white black
+LRANGE mycolor1 0 -1
+LPUSH mycolor1 red blue
+LRANGE mycolor1 0 -1
+LPUSH mycolor1 white black red blue
+LRANGE mycolor1 0 -1
+LTRIM mycolor1 -2 -1
+LRANGE mycolor1 0 -1
+SADD mycolor "White"
+SADD mycolor "Yellow" "Green"
+SADD mycolor "Red" "Blue" "Orange
+SMEMBERS mycolor
+ZADD mycolorset 1 white
+ZADD mycolorset 2 black
+ZADD mycolorset 3 red
+ZRANGE mycolorset 0 -1
+ZRANGE mycolorset 0 -1 WITHSCORES
+ZADD mycolorset  528 white  2514 black 850 red 128 pink 742 yellow
+ZADD mycolorset  158 orange 1500 green 645 blue 426 gray
+ZCOUNT mycolorset -inf +inf
