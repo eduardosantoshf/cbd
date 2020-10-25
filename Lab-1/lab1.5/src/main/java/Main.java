@@ -56,26 +56,43 @@ public class Main {
                     System.out.println(postL.getMessageSet(user));
                     break;
                 case 3:
-                    /*
+
                     Scanner user_to_subscribe = new Scanner(System.in);
                     Scanner user_inline = new Scanner(System.in);
 
-                    System.out.printf("Which user are you?");
+                    System.out.println(postH.getUserSet());
+
+                    System.out.printf("Which user are you? ");
                     String current_user = user_inline.nextLine();
 
                     System.out.println(postH.getUserSet());
 
-                    System.out.println("User to subscribe?");
-                    String user2subscribe = user_to_subscribe.nextLine();
+                    System.out.println("User to subscribe? ");
+                    String user2subscribe = user_inline.nextLine();
 
-                    if (!user_subscriptions.containsKey(current_user)) {
-                        user_subscriptions.put(current_user, user2subscribe);
-                    } else {
-                        user_subscriptions.
+                    postS.saveFollower(current_user, user2subscribe);
+                    break;
+
+                case 4:
+                    Scanner c_user = new Scanner(System.in);
+
+                    System.out.printf("Which user are you? ");
+                    String current_user2 = c_user.nextLine();
+
+                    Set<String> following = postS.getFollowerSet(current_user2);
+                    if (following.size() == 0)
+                        System.out.println("You don't follow anyone");
+                    else {
+                        for (String s_u: following) {
+                            System.out.println("Message from " + s_u + ":");
+                            List<String> msgs = postL.getMessageSet(s_u);
+                            for(String m: msgs)
+                                System.out.println(m);
+                        }
+
                     }
-                    */
+                    break;
             }
-
         } while (sc.nextInt() != 5);
     }
 }
@@ -88,12 +105,12 @@ class PostSet {
         this.jedis = new Jedis("localhost");
     }
 
-    public void saveFollower(String username) {
-        jedis.sadd(FOLLOWERS, username);
+    public void saveFollower(String username, String following_user) {
+        jedis.sadd("following:" + username, following_user);
     }
 
-    public Set<String> getFollowerSet() {
-        return jedis.smembers(FOLLOWERS);
+    public Set<String> getFollowerSet(String username) {
+        return jedis.smembers("following:" + username);
     }
 
     public Set<String> getAllKeys() {
