@@ -54,7 +54,6 @@ class SimplePostSet {
     private Jedis jedis;
     public static String USERS = "users";
 
-    // Key set for users' name
     public SimplePostSet() {
         this.jedis = new Jedis("localhost");
     }
