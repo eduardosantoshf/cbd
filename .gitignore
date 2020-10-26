@@ -1,3 +1,4 @@
 .DS_Store
 target/
 mongodb-macos-x86_64-4.4.1/
+dump.rdb
