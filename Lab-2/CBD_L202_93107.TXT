@@ -72,3 +72,7 @@ db.rest.aggregate([{$group : { _id : '$localidade', no_restaurants : {$sum : 1}}
 db.rest.aggregate([{$addFields : { average_score :  {$avg : '$grades.score'}}}, {$match : {average_score: {$gt: 30}}}])
 
 #21
+db.rest.aggregate([{$addFields : { total_score :  {$sum : '$grades.score'}}}, {$match : {total_score: {$gt: 70}, gastronomia: 'American', 'address.coord.0': {$lt: -65}}}])
+
+#22
+
