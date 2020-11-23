@@ -59,29 +59,29 @@ def main():
     db = CLIENT["wine_db"]
     collection = db["rest"]
     
-    # get_all_wines_names(collection)
+    get_all_wines_names(collection)
 
-    # search_wine(collection, "Domaine Fernand Engel 2016 Pinot Noir Rosé (Alsace)")
+    search_wine(collection, "Domaine Fernand Engel 2016 Pinot Noir Rosé (Alsace)")
 
-    # find_wines_defined_points(collection, 95)
+    find_wines_defined_points(collection, 95)
 
-    # wines_from_Portugal(collection)
+    wines_from_Portugal(collection)
 
-    # wines_between_price(collection, 89, 115)
+    wines_between_price(collection, 89, 115)
 
-    # tasters_twitters(collection)
+    tasters_twitters(collection)
 
-    # most_common_country(collection)
+    most_common_country(collection)
 
-    # wines_in_each_country(collection)
+    wines_in_each_country(collection)
 
-    # wines_with_Serene_in_title(collection)
+    wines_with_Serene_in_title(collection)
 
-    # wine_by_region(collection)
+    wine_by_region(collection)
      
-    # wine_by_winery(collection)
+    wine_by_winery(collection)
 
-    # different_wineries_France(collection)
+    different_wineries_France(collection)
 
 if __name__ == '__main__':
     main()
