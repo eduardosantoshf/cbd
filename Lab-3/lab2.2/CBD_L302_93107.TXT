@@ -1,0 +1,22 @@
+CREATE KEYSPACE VideoSharingSystem  WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 2};
+
+cqlsh:videosharingsystem> create columnfamily user (
+                      ... username text,
+                      ... name text,
+                      ... email text,
+                      ... registration_seal timestamp,
+                      ... primary key(username, email)
+                      ... );
+
+cqlsh:videosharingsystem> create columntable video (
+                      ... id int,
+                      ... author text,
+                      ... name text,
+                      ... description text,
+                      ... tags list<text>,
+                      ... upload_timestamp timestamp,
+                      ... primary key (id, upload_timestamp))
+                      ... with clustering order by (upload_timestamp DESC);
+
+
+
