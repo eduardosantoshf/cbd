@@ -1,0 +1,137 @@
+CREATE KEYSPACE VideoSharingSystem  WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 2};
+
+cqlsh:videosharingsystem> create columnfamily user (
+                      ... username text,
+                      ... name text,
+                      ... email text,
+                      ... registration_seal timestamp,
+                      ... primary key(username, email)
+                      ... );
+
+cqlsh:videosharingsystem> create columntable video (
+                      ... id int,
+                      ... author text,
+                      ... name text,
+                      ... description text,
+                      ... tags list<text>,
+                      ... upload_timestamp timestamp,
+                      ... primary key (id, upload_timestamp))
+                      ... with clustering order by (upload_timestamp DESC);
+
+cqlsh:videosharingsystem> create columnfamily comment_by_author (
+                      ... author text,
+                      ... video_id int,
+                      ... comment text,
+                      ... comment_timestamp timestamp,
+                      ... primary key (author, comment_timestamp))
+                      ... with clustering order by (comment_timestamp DESC);
+
+cqlsh:videosharingsystem> create columnfamily comment_by_video (
+                      ... author text,
+                      ... video_id int,
+                      ... comment text,
+                      ... comment_timestamp timestamp,
+                      ... primary key (author, comment_timestamp))
+                      ... with clustering order by (comment_timestamp DESC);
+
+cqlsh:videosharingsystem> create columnfamily video_follower (
+                      ... user set<text>,
+                      ... video_id int,
+                      ... primary key (video_id));
+
+cqlsh:videosharingsystem> create columnfamily events_regist (
+                      ... video_id int,
+                      ... user text,
+                      ... type text,
+                      ... time timestamp,
+                      ... current_time timestamp,
+                      ... primary key (video_id, user, time, current_time));
+                      
+cqlsh:videosharingsystem> create columnfamily video_rating (
+                      ... video_id int,
+                      ... rating int,
+                      ... primary key (video_id, rating));
+
+
+fill tables with values:
+
+-------- user table --------
+
+cqlsh:videosharingsystem> insert into user (username, name, email, registration_seal) values ('eduardosantos', 'Edu', 'edu@ua.pt', dateof(now()));
+cqlsh:videosharingsystem> insert into user (username, name, email, registration_seal) values ('bastitos', 'Bastos', 'tabaqueiro@ua.pt', dateof(now()));
+cqlsh:videosharingsystem> insert into user (username, name, email, registration_seal) values ('danielzitogomas', 'Daniel', 'gomitas@ua.pt', dateof(now()));
+cqlsh:videosharingsystem> insert into user (username, name, email, registration_seal) values ('direitinho', 'Direito', 'torto@ua.pt', dateof(now()));
+cqlsh:videosharingsystem> insert into user (username, name, email, registration_seal) values ('chicoComX', 'Chico', 'ubi@ua.pt', dateof(now()));
+cqlsh:videosharingsystem> insert into user (username, name, email, registration_seal) values ('gaulopil', 'Gil', 'gilzito@ua.pt', dateof(now()));
+cqlsh:videosharingsystem> insert into user (username, name, email, registration_seal) values ('phui', 'Paulito', 'aiai@ua.pt', dateof(now()));
+cqlsh:videosharingsystem> insert into user (username, name, email, registration_seal) values ('zezito', 'Ze', 'bommail@ua.pt', dateof(now()));
+cqlsh:videosharingsystem> insert into user (username, name, email, registration_seal) values ('nemSei', 'Antonio', 'tony@ua.pt', dateof(now()));
+cqlsh:videosharingsystem> insert into user (username, name, email, registration_seal) values ('swarovski', 'Pedro', 'pedroskys@ua.pt', dateof(now()));
+
+-------- video table --------
+
+cqlsh:videosharingsystem> insert into video (id, author, name, description, tags, upload_timestamp) values (1, 'eduardosantos', 'reys are back', 'trust me, they are back', ['reys', 'party', 'beirao', 'ginzito'], '2020-10-18');
+cqlsh:videosharingsystem> insert into video (id, author, name, description, tags, upload_timestamp) values (2, 'bastitos', 'lets smoke', 'nem queria', ['tabaquinho', 'rolaenrola', 'hendrix', 'tabaqueiro'], '2020-11-12');
+cqlsh:videosharingsystem> insert into video (id, author, name, description, tags, upload_timestamp) values (3, 'danielzitogomas', 'estudem comigo 34h seguidas', 'aquele 20 que sempre quiseram', ['estudar', 'noSleep', 'xixi_cama', 'adoro'], '2020-11-23');
+cqlsh:videosharingsystem> insert into video (id, author, name, description, tags, upload_timestamp) values (4, 'direitinho', 'AETTUA e vida', 'vou-vos mostrar que sim', ['AETTUA', 'aettua', 'AENOSSA'], '2017-09-20');
+cqlsh:videosharingsystem> insert into video (id, author, name, description, tags, upload_timestamp) values (5, 'chicoComX', 'Ubiwhere e vida', 'nunca me pagaram, mas pronto', ['Ubiwhere', 'embaixador', 'dor'], '2019-04-14');
+cqlsh:videosharingsystem> insert into video (id, author, name, description, tags, upload_timestamp) values (6, 'gaulopil', 'Eu a servir bebidas no BE', 'vender? quero beber', ['bebidas', 'shots'], '2018-06-1');
+cqlsh:videosharingsystem> insert into video (id, author, name, description, tags, upload_timestamp) values (7, 'phui', 'Vou-vos mostrar o meu novo BMW', 'so para dar aquele flex', ['bmw', 'queriam'], '2017-08-10');
+cqlsh:videosharingsystem> insert into video (id, author, name, description, tags, upload_timestamp) values (8, 'zezito', 'Sabem quem e o Ze?', 'O Ze ninguem ahahahah, nice', ['gotcha', 'borros'], '2020-02-3');
+cqlsh:videosharingsystem> insert into video (id, author, name, description, tags, upload_timestamp) values (9, 'nemSei', 'Nao sabes?', 'Nem eu', ['enganei-te', 'lol', 'borros'], '2019-02-9');
+cqlsh:videosharingsystem> insert into video (id, author, name, description, tags, upload_timestamp) values (10, 'swarovski', 'Shine bright like a daemon', 'CassandraDaemon', ['sql', 'noSQL', 'simSQL'], '2020-12-5');
+
+-------- comment_by_author table --------
+
+cqlsh:videosharingsystem> insert into comment_by_author (author, video_id, comment, comment_timestamp) values ('bastitos', 1, 'que reys', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_author (author, video_id, comment, comment_timestamp) values ('danielzitogomas', 1, 'reys mesmo', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_author (author, video_id, comment, comment_timestamp) values ('direitinho', 2, 'seu tabaqueiro', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_author (author, video_id, comment, comment_timestamp) values ('bastitos', 8, 'nao sei, quem e?', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_author (author, video_id, comment, comment_timestamp) values ('chicoComX', 4, 'posso-me juntar a AETTUA??', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_author (author, video_id, comment, comment_timestamp) values ('bastitos', 10, 'puto nao percebo nada disto', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_author (author, video_id, comment, comment_timestamp) values ('eduardosantos', 6, 'pour me a drink, pls', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_author (author, video_id, comment, comment_timestamp) values ('eduardosantos', 3, 'adorei o video, estava a precisar de uma boa direta', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_author (author, video_id, comment, comment_timestamp) values ('nemSei', 7, 'nem sei quem es, mas mostra!', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_author (author, video_id, comment, comment_timestamp) values ('direitinho', 10, 'adoro brilhar!', dateof(now()));
+
+-------- comment_by_video table --------
+
+cqlsh:videosharingsystem> insert into comment_by_video (author, video_id, comment, comment_timestamp) values ('bastitos', 1, 'que reys', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_video (author, video_id, comment, comment_timestamp) values ('danielzitogomas', 1, 'reys mesmo', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_video (author, video_id, comment, comment_timestamp) values ('direitinho', 2, 'seu tabaqueiro', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_video (author, video_id, comment, comment_timestamp) values ('bastitos', 8, 'nao sei, quem e?', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_video (author, video_id, comment, comment_timestamp) values ('chicoComX', 4, 'posso-me juntar a AETTUA??', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_video (author, video_id, comment, comment_timestamp) values ('bastitos', 10, 'puto nao percebo nada disto', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_video (author, video_id, comment, comment_timestamp) values ('eduardosantos', 6, 'pour me a drink, pls', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_video (author, video_id, comment, comment_timestamp) values ('eduardosantos', 3, 'adorei o video, estava a precisar de uma boa direta', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_video (author, video_id, comment, comment_timestamp) values ('nemSei', 7, 'nem sei quem es, mas mostra!', dateof(now()));
+cqlsh:videosharingsystem> insert into comment_by_video (author, video_id, comment, comment_timestamp) values ('direitinho', 10, 'adoro brilhar!', dateof(now()));
+
+-------- video_follower table --------
+
+cqlsh:videosharingsystem> insert into video_follower (user, video_id) values ({'bastitos', 'danielzitogomas'}, 1);
+cqlsh:videosharingsystem> insert into video_follower (user, video_id) values ({'eduardosantos', 'danielzitogomas', 'direitinho'}, 2);
+cqlsh:videosharingsystem> insert into video_follower (user, video_id) values ({'eduardosantos', 'bastitos'}, 3);
+cqlsh:videosharingsystem> insert into video_follower (user, video_id) values ({'eduardosantos', 'bastitos'}, 4);
+cqlsh:videosharingsystem> insert into video_follower (user, video_id) values ({'eduardosantos', 'bastitos', 'danielzitogomas'}, 5);
+cqlsh:videosharingsystem> insert into video_follower (user, video_id) values ({'eduardosantos', 'bastitos', 'danielzitogomas'}, 6);
+cqlsh:videosharingsystem> insert into video_follower (user, video_id) values ({'eduardosantos'}, 7);
+cqlsh:videosharingsystem> insert into video_follower (user, video_id) values ({'chicoComX'}, 8);
+cqlsh:videosharingsystem> insert into video_follower (user, video_id) values ({'zezito'}, 9);
+cqlsh:videosharingsystem> insert into video_follower (user, video_id) values ({'bastitos'}, 10);
+
+-------- events_regist table --------
+
+cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time, current_time) values (1, 'bastitos', 'play', dateof(now()), dateof(now()));
+cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time, current_time) values (1, 'direitinho', 'play', dateof(now()), dateof(now()));
+cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time, current_time) values (1, 'direitinho', 'stop', dateof(now()), dateof(now()));
+cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time, current_time) values (3, 'chicoComX', 'play', dateof(now()), dateof(now()));
+cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time, current_time) values (5, 'nemSei', 'play', dateof(now()), dateof(now()));
+cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time, current_time) values (1, 'bastitos', 'stop', dateof(now()), dateof(now()));
+cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time, current_time) values (7, 'phui', 'play', dateof(now()), dateof(now()));
+cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time, current_time) values (10, 'phui', 'play', dateof(now()), dateof(now()));
+cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time, current_time) values (10, 'gaulopil', 'play', dateof(now()), dateof(now()));
+cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time, current_time) values (9, 'direitinho', 'play', dateof(now()), dateof(now()));
+
+-------- events_regist table --------
+
