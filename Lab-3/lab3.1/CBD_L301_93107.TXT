@@ -1,0 +1,109 @@
+## lab2.1
+
+cqlsh> create keyspace cbd
+   ... with replication = {'class': 'SimpleStrategy', 'replication_factor': 3};
+
+cqlsh> describe KEYSPACES;
+cbd  system_schema  system_auth  system  system_distributed  system_traces
+
+cqlsh> use cbd ;
+
+cqlsh:cbd> create columnfamily rey (
+       ... id int primary key,
+       ... name text,
+       ... age int,
+       ... nickname text
+       ... );
+    
+cqlsh:cbd> select * from rey;
+
+ id | age | name | nickname
+----+-----+------+----------
+
+(0 rows)
+
+cqlsh:cbd> alter table rey
+       ... drop nickname;
+
+cqlsh:cbd> select * from rey;
+
+ id | age | name
+----+-----+------
+
+(0 rows)
+
+cqlsh:cbd> alter table rey
+       ... add nickname text;
+
+cqlsh:cbd> select * from rey;
+
+ id | age | name | nickname
+----+-----+------+----------
+
+(0 rows)
+
+cqlsh:cbd> insert into rey (id, name, age, nickname)
+       ... values (1, 'Edu', 21, 'carequinha');
+cqlsh:cbd> insert into rey (id, name, age, nickname)
+       ... values (2, 'Bastitos', 20, 'tabaqueiro');
+cqlsh:cbd> insert into rey (id, name, age, nickname)
+       ... values (3, 'Daniel', 20, 'gomitas');
+
+cqlsh:cbd> update rey
+       ... set name = 'Daniele'
+       ... where id = 3;
+
+cqlsh:cbd> select * from rey;
+
+ id | age | name     | nickname
+----+-----+----------+------------
+  1 |  21 |      Edu | carequinha
+  2 |  20 | Bastitos | tabaqueiro
+  3 |  20 |  Daniele |    gomitas
+
+(3 rows)
+
+cqlsh:cbd> select name from rey;
+
+ name
+----------
+      Edu
+ Bastitos
+  Daniele
+
+(3 rows)
+
+cqlsh:cbd> delete from rey
+       ... where id = 2;
+
+cqlsh:cbd> select * from rey;
+
+ id | age | name    | nickname
+----+-----+---------+------------
+  1 |  21 |     Edu | carequinha
+  3 |  20 | Daniele |    gomitas
+
+(2 rows)
+
+cqlsh:cbd> select nickname from rey
+       ... limit 1;
+
+ nickname
+------------
+ carequinha
+
+(1 rows)
+
+cqlsh:cbd> select name from rey
+       ... where age > 20;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Cannot execute this query as it might involve data filtering and thus may have unpredictable performance. If you want to execute this query despite the performance unpredictability, use ALLOW FILTERING"
+
+cqlsh:cbd> select name from rey where age > 20 allow filtering;
+
+ name
+------
+  Edu
+
+(1 rows)
+
+
