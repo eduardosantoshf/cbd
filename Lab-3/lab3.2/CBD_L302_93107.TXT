@@ -1,3 +1,5 @@
+/------------------------ a) ------------------------/
+
 CREATE KEYSPACE VideoSharingSystem  WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 2};
 
 cqlsh:videosharingsystem> create columnfamily user (
@@ -133,5 +135,78 @@ cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time,
 cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time, current_time) values (10, 'gaulopil', 'play', dateof(now()), dateof(now()));
 cqlsh:videosharingsystem> insert into events_regist (video_id, user, type, time, current_time) values (9, 'direitinho', 'play', dateof(now()), dateof(now()));
 
--------- events_regist table --------
+-------- video_rating table --------
 
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (1, 5);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (1, 3);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (1, 1);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (2, 4);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (2, 5);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (2, 5);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (3, 1);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (3, 2);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (3, 2);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (3, 3);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (4, 4);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (5, 3);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (5, 2);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (6, 1);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (6, 1);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (6, 1);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (7, 3);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (7, 4);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (7, 3);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (8, 3);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (9, 5);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (9, 5);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (9, 5);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (9, 4);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (10, 2);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (10, 5);
+cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (10, 4);
+
+/------------------------ c) ------------------------/
+
+7) cqlsh:videosharingsystem> select * from video where author='eduardosantos' allow filtering;
+
+ id | upload_timestamp                | author        | description             | name          | tags
+----+---------------------------------+---------------+-------------------------+---------------+----------------------------------------
+  1 | 2020-10-17 23:00:00.000000+0000 | eduardosantos | trust me, they are back | reys are back | ['reys', 'party', 'beirao', 'ginzito']
+
+8) cqlsh:videosharingsystem> select * from comment_by_author where author='bastitos' allow filtering;
+
+ author   | comment_timestamp               | comment                     | video_id
+----------+---------------------------------+-----------------------------+----------
+ bastitos | 2020-12-06 18:07:46.947000+0000 | puto nao percebo nada disto |       10
+ bastitos | 2020-12-06 18:04:41.685000+0000 |            nao sei, quem e? |        8
+ bastitos | 2020-12-06 18:02:00.387000+0000 |                    que reys |        1
+
+9) cqlsh:videosharingsystem> select * from comment_by_video where video_id=1 allow filtering;
+
+ author          | comment_timestamp               | comment    | video_id
+-----------------+---------------------------------+------------+----------
+ danielzitogomas | 2020-12-06 18:13:56.199000+0000 | reys mesmo |        1
+        bastitos | 2020-12-06 18:12:57.193000+0000 |   que reys |        1
+
+10) cqlsh:videosharingsystem> select avg(rating) as Average, count(rating) as reviews_number from video_rating where video_id=1;
+
+ average | reviews_number
+---------+----------------
+       3 |              3
+
+/------------------------ d) ------------------------/
+
+1) cqlsh:videosharingsystem> select * from comment_by_video where video_id=10 limit 3 allow filtering;
+
+ author     | comment_timestamp               | comment                     | video_id
+------------+---------------------------------+-----------------------------+----------
+ direitinho | 2020-12-06 18:14:33.907000+0000 |              adoro brilhar! |       10
+   bastitos | 2020-12-06 18:14:15.718000+0000 | puto nao percebo nada disto |       10
+
+Note: it only appears 2 comments, because the video only has 2 comments
+
+2) cqlsh:videosharingsystem> select tags from video where id=1;
+
+ tags
+----------------------------------------
+ ['reys', 'party', 'beirao', 'ginzito']
