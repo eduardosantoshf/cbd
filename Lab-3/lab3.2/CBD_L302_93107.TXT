@@ -54,8 +54,13 @@ cqlsh:videosharingsystem> create columnfamily video_rating (
                       ... rating int,
                       ... primary key (video_id, rating));
 
+cqlsh:videosharingsystem> create columntable videos_by_tag (
+                      ... tag text,
+                      ... videos set<int>,
+                      ... number_of_videos int,
+                      ... primary key (tag));
 
-fill tables with values:
+filling tables with values:
 
 -------- user table --------
 
@@ -165,6 +170,38 @@ cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (10
 cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (10, 5);
 cqlsh:videosharingsystem> insert into video_rating (video_id, rating) values (10, 4);
 
+-------- videos_by_tag table --------
+
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('party', {1}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('beirao', {1}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('ginzito', {1}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('tabaquinho', {2}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('rolaenrola', {2}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('hendrix', {2}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('tabaqueiro', {2}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('estudar', {3}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('noSleep', {3}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('xixi_cama', {3}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('adoro', {3}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('AETTUA', {4}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('aettua', {4}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('AENOSSA', {4}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('Ubiwhere', {5}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('embaixador', {5}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('dor', {5}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('bebidas', {6}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('shots', {6}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('bmw', {7}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('queriam', {7}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('gotcha', {8}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('borros', {8,9}, 2);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('enganei-te', {9}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('lol', {9}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('sql', {10}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('noSQL', {10}, 1);
+cqlsh:videosharingsystem> insert into videos_by_tag (tag, videos, number_of_videos) values ('simSQL', {10}, 1);
+
+
 /------------------------ c) ------------------------/
 
 7) cqlsh:videosharingsystem> select * from video where author='eduardosantos' allow filtering;
@@ -210,3 +247,68 @@ Note: it only appears 2 comments, because the video only has 2 comments
  tags
 ----------------------------------------
  ['reys', 'party', 'beirao', 'ginzito']
+
+3) cqlsh:videosharingsystem> select videos from videos_by_tag where tag='borros';
+
+ videos
+--------
+ {8, 9}
+
+4) cqlsh:videosharingsystem> select * from events_regist where user='direitinho' and video_id=1 limit 5;
+
+ video_id | user       | time                            | current_time                    | type
+----------+------------+---------------------------------+---------------------------------+------
+        1 | direitinho | 2020-12-06 18:28:31.868000+0000 | 2020-12-06 18:28:31.868000+0000 | play
+        1 | direitinho | 2020-12-06 18:28:55.775000+0000 | 2020-12-06 18:28:55.775000+0000 | stop
+
+5) cqlsh:videosharingsystem> select * from video where author='bastitos' and upload_timestamp > '2020-11-11' and upload_timestamp < '2020-11-13' allow filtering;
+
+ id | upload_timestamp                | author   | description | name       | tags
+----+---------------------------------+----------+-------------+------------+-------------------------------------------------------
+  2 | 2020-11-12 00:00:00.000000+0000 | bastitos |  nem queria | lets smoke | ['tabaquinho', 'rolaenrola', 'hendrix', 'tabaqueiro']
+
+6) Can't be done, we only can majke this search for a specific user
+
+7) cqlsh:videosharingsystem> select user from video_follower where video_id=1;
+
+ user
+---------------------------------
+ {'bastitos', 'danielzitogomas'}
+
+8) Because in Cassandra we can't do joins, we have to create a new table to simulate this join.
+
+9) Can't be done
+
+10) cqlsh:videosharingsystem> select tag, number_of_videos from videos_by_tag;
+
+ tag        | number_of_videos
+------------+------------------
+     gotcha |                1
+     beirao |                1
+      shots |                1
+      noSQL |                1
+ embaixador |                1
+    bebidas |                1
+    estudar |                1
+ tabaqueiro |                1
+      party |                1
+     aettua |                1
+    noSleep |                1
+        dor |                1
+        sql |                1
+     AETTUA |                1
+   Ubiwhere |                1
+        lol |                1
+    ginzito |                1
+ tabaquinho |                1
+     borros |                2
+    AENOSSA |                1
+ rolaenrola |                1
+    queriam |                1
+      adoro |                1
+  xixi_cama |                1
+       reys |                1
+ enganei-te |                1
+        bmw |                1
+    hendrix |                1
+     simSQL |                1
