@@ -267,7 +267,7 @@ Note: it only appears 2 comments, because the video only has 2 comments
 ----+---------------------------------+----------+-------------+------------+-------------------------------------------------------
   2 | 2020-11-12 00:00:00.000000+0000 | bastitos |  nem queria | lets smoke | ['tabaquinho', 'rolaenrola', 'hendrix', 'tabaqueiro']
 
-6) Can't be done, we only can majke this search for a specific user
+6) Can't be done, we only can make this search for a specific user
 
 7) cqlsh:videosharingsystem> select user from video_follower where video_id=1;
 
@@ -279,7 +279,9 @@ Note: it only appears 2 comments, because the video only has 2 comments
 
 9) Can't be done
 
-10) cqlsh:videosharingsystem> select tag, number_of_videos from videos_by_tag;
+10)
+
+11) cqlsh:videosharingsystem> select tag, number_of_videos from videos_by_tag;
 
  tag        | number_of_videos
 ------------+------------------
