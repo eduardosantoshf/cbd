@@ -1,5 +1,7 @@
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.*;
+import org.apache.spark.sql.catalyst.parser.CatalystSqlParser;
+
 import java.util.Scanner;
 
 public class Cass {
@@ -8,7 +10,11 @@ public class Cass {
             System.out.println("Choose an option:" +
                     "\n 0 - Insert user" +
                     "\n 1 - Edit user" +
-                    "\n 2 - Search user");
+                    "\n 2 - Search user" +
+                    "\n 3 - Search all videos from an author" +
+                    "\n 4 - Search comments by user" +
+                    "\n 5 - Search comments by video" +
+                    "\n 6 - List of tags of a specific video");
 
             Scanner scn1 = new Scanner(System.in);
 
@@ -17,6 +23,9 @@ public class Cass {
             scn1.close();
 
             switch (input) {
+
+                //-------------- a) --------------//
+
                 case 0:
                     /*
                     Scanner scn2 = new Scanner(System.in);
@@ -66,9 +75,31 @@ public class Cass {
                     searchUser(session, "eduardosantos");
 
                     break;
+
+                //-------------- b) --------------//
+
+                case 3:
+                    searchVideosByAuthor(session, "eduardosantos");
+
+                    break;
+
+                case 4:
+                    searchCommentsByUser(session, "bastitos");
+
+                    break;
+
+                case 5:
+                    searchCommentsByVideo(session, 1);
+
+                    break;
+
+                case 6:
+                    videoTagsList(session, 1);
             }
         }
     }
+
+    //-------------- a) --------------//
 
     private static void insertUser(CqlSession session, String username, String email, String name) {
         session.execute(
@@ -101,6 +132,92 @@ public class Cass {
 
         } catch (Exception QueryExecutionException) {
             System.out.println("ERROR: User doesn't exists!");
+        }
+    }
+
+    //-------------- b) --------------//
+
+    private static void searchVideosByAuthor(CqlSession session, String author) {
+        try {
+            ResultSet result = session.execute(
+                    SimpleStatement.builder("select * from video where author=? allow filtering")
+                            .addPositionalValue(author)
+                            .build()
+            );
+
+            for (Row r : result) {
+                System.out.format("id: %d | timestamp: %s | author: %s | description: %s | name: %s | tags: %s \n",
+                        r.getInt("id"),
+                        r.getObject("upload_timestamp"),
+                        r.getString("author"),
+                        r.getString("description"),
+                        r.getString("name"),
+                        r.getList("tags", String.class)
+                );
+            }
+
+        } catch (Exception QueryExecutionException) {
+            System.out.println("ERROR: User doesn't exists!");
+        }
+    }
+
+    private static void searchCommentsByUser(CqlSession session, String user) {
+        try {
+            ResultSet result = session.execute(
+                    SimpleStatement.builder("select * from comment_by_author where author=? allow filtering")
+                            .addPositionalValue(user)
+                            .build()
+            );
+
+            for (Row r : result) {
+                System.out.format("author: %s | timestamp: %s | comment: %s | video_id: %d \n",
+                        r.getString("author"),
+                        r.getObject("comment_timestamp"),
+                        r.getString("comment"),
+                        r.getInt("video_id")
+                );
+            }
+
+        } catch (Exception QueryExecutionException) {
+            System.out.println("ERROR: User doesn't exists!");
+        }
+    }
+
+    private static void searchCommentsByVideo(CqlSession session, int video_id) {
+        try {
+            ResultSet result = session.execute(
+                    SimpleStatement.builder("select * from comment_by_video where video_id=? allow filtering")
+                            .addPositionalValue(video_id)
+                            .build()
+            );
+
+            for (Row r : result) {
+                System.out.format("author: %s | timestamp: %s | comment: %s | video_id: %d \n",
+                        r.getString("author"),
+                        r.getObject("comment_timestamp"),
+                        r.getString("comment"),
+                        r.getInt("video_id")
+                );
+            }
+
+        } catch (Exception QueryExecutionException) {
+            System.out.println("ERROR: Video doesn't exists!");
+        }
+    }
+
+    private static void videoTagsList(CqlSession session, int video_id) {
+        try {
+            ResultSet result = session.execute(
+                    SimpleStatement.builder("select tags from video where id=?")
+                            .addPositionalValue(video_id)
+                            .build()
+            );
+
+            Row r = result.one();
+            System.out.println("Tags: " + r.getList("tags", String.class));
+
+        } catch (Exception QueryExecutionException) {
+            System.out.println("ERROR: Video doesn't exists!");
         }
     }
 }
