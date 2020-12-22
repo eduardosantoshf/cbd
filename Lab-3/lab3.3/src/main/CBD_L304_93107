@@ -1,0 +1,102 @@
+CREATE KEYSPACE EdusZoo  WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 2};
+
+/----------- Creation of tables -----------/
+
+cqlsh:eduszoo> create columnfamily zoo (
+           ... name text,
+           ... keepers set<text>,
+           ... animals set<text>,
+           ... primary key (name)
+           ... );
+
+cqlsh:eduszoo> create columnfamily animal (
+           ... id int,
+           ... name text,
+           ... breed text,
+           ... date_of_arrival timestamp,
+           ... feeds_liked list<text>,
+           ... primary key (name)
+           ... );
+
+cqlsh:eduszoo> create columnfamily keeper (
+           ... id int,
+           ... name text,
+           ... age int,
+           ... sex text,
+           ... breedSpecialization set<text>,
+           ... primary key (name)
+           ... );
+
+cqlsh:eduszoo> create columnfamily feed (
+           ... feed map<text, int>,
+           ... company text,
+           ... id int,
+           ... primary key (id)
+           ... );
+
+cqlsh:eduszoo> create columnfamily godfather (
+           ... name text,
+           ... email text,
+           ... number int,
+           ... animal_id int,
+           ... primary key (email)
+           ... );
+
+/----------- Populating table animal -----------/
+
+cqlsh:eduszoo> insert into animal (id, name, breed, date_of_arrival, feeds_liked) values (1, 'Burrito', 'Burro', dateof(now()), ['LaComida', 'EatNRepeat', 'Food4Animals']);
+cqlsh:eduszoo> insert into animal (id, name, breed, date_of_arrival, feeds_liked) values (2, 'Cavalito', 'Cavalo', dateof(now()), ['EatNRepeat']);
+cqlsh:eduszoo> insert into animal (id, name, breed, date_of_arrival, feeds_liked) values (3, 'Hipo', 'Hipopotamo', dateof(now()), ['HipoFeast']);
+cqlsh:eduszoo> insert into animal (id, name, breed, date_of_arrival, feeds_liked) values (4, 'Pipa', 'Hipopotamo', dateof(now()), ['HipoFeast']);
+cqlsh:eduszoo> insert into animal (id, name, breed, date_of_arrival, feeds_liked) values (5, 'Gira', 'Girafa', dateof(now()), ['LaComidaVegan']);
+cqlsh:eduszoo> insert into animal (id, name, breed, date_of_arrival, feeds_liked) values (6, 'leG', 'Girafa', dateof(now()), ['LaComidaVegan']);
+cqlsh:eduszoo> insert into animal (id, name, breed, date_of_arrival, feeds_liked) values (7, 'Bastitos', 'Camelo', dateof(now()), ['CigarrosDeChocolate']);
+cqlsh:eduszoo> insert into animal (id, name, breed, date_of_arrival, feeds_liked) values (8, 'Daniel', 'Camelo', dateof(now()), ['CigarrosDeChocolate', 'ErvaSemAcucar']);
+cqlsh:eduszoo> insert into animal (id, name, breed, date_of_arrival, feeds_liked) values (9, 'Evie', 'Leao', dateof(now()), ['Meat', 'MeatAndGreet']);
+cqlsh:eduszoo> insert into animal (id, name, breed, date_of_arrival, feeds_liked) values (10, 'Lon', 'Leao', dateof(now()), ['Meat', 'MeatAndGreet']);
+cqlsh:eduszoo> insert into animal (id, name, breed, date_of_arrival, feeds_liked) values (11, 'Direitinho', 'Macaco', dateof(now()), ['MonkeyFood']);
+cqlsh:eduszoo> insert into animal (id, name, breed, date_of_arrival, feeds_liked) values (12, 'Pedrito', 'Macaco', dateof(now()), ['MonkeyFood', 'Bagas']);
+
+/----------- Populating table keeper -----------/
+
+cqlsh:eduszoo> insert into keeper (id, name, age, sex, breedspecialization) values (1, 'Rui', 23, 'M', {'Macaco'});
+cqlsh:eduszoo> insert into keeper (id, name, age, sex, breedspecialization) values (2, 'Vasco', 27, 'M', {'Macaco'});
+cqlsh:eduszoo> insert into keeper (id, name, age, sex, breedspecialization) values (3, 'Afonso', 21, 'M', {'Cavalo'});
+cqlsh:eduszoo> insert into keeper (id, name, age, sex, breedspecialization) values (4, 'Patricia', 25, 'F', {'Cavalo'});
+cqlsh:eduszoo> insert into keeper (id, name, age, sex, breedspecialization) values (5, 'Mariana', 22, 'F', {'Hipopotamo'});
+cqlsh:eduszoo> insert into keeper (id, name, age, sex, breedspecialization) values (6, 'Joao', 21, 'M', {'Hipopotamo'});
+cqlsh:eduszoo> insert into keeper (id, name, age, sex, breedspecialization) values (7, 'Luis', 21, 'M', {'Hipopotamo'});
+cqlsh:eduszoo> insert into keeper (id, name, age, sex, breedspecialization) values (8, 'Marco', 21, 'M', {'Girafa', 'Hipopotamo'});
+cqlsh:eduszoo> insert into keeper (id, name, age, sex, breedspecialization) values (9, 'Rafael', 32, 'M', {'Girafa', 'Leao', 'Macaco'});
+cqlsh:eduszoo> insert into keeper (id, name, age, sex, breedspecialization) values (10, 'Luisa', 29, 'F', {'Macaco'});
+cqlsh:eduszoo> insert into keeper (id, name, age, sex, breedspecialization) values (11, 'Eduardo', 21, 'M', {'Camelo'});
+cqlsh:eduszoo> insert into keeper (id, name, age, sex, breedspecialization) values (12, 'Maria', 20, 'F', {'Camelo'});
+
+/----------- Populating table feed -----------/
+
+cqlsh:eduszoo> insert into feed (feed, company, id) values ({'EatNRepeat':33}, 'AnimalFood', 1);
+cqlsh:eduszoo> insert into feed (feed, company, id) values ({'HipoFeast':26, 'LaComidaVegan':9}, 'BestFoodCompany', 2);
+cqlsh:eduszoo> insert into feed (feed, company, id) values ({'CigarrosDeChocolate':12}, 'Chocolate4Animals', 3);
+cqlsh:eduszoo> insert into feed (feed, company, id) values ({'ErvaSemAcucar':55}, 'AniGoods', 4);
+cqlsh:eduszoo> insert into feed (feed, company, id) values ({'Meat':34}, 'Talhos Rosa', 5);
+cqlsh:eduszoo> insert into feed (feed, company, id) values ({'MeatAndGreet':41}, 'Talhos Pessegueiro', 6);
+cqlsh:eduszoo> insert into feed (feed, company, id) values ({'MonkeyFood':12}, 'Monkeys Restaurant', 7);
+cqlsh:eduszoo> insert into feed (feed, company, id) values ({'Bagas':3}, 'LasBagas', 8);
+cqlsh:eduszoo> insert into feed (feed, company, id) values ({'Bagas':5}, 'RaspBerry', 9);
+cqlsh:eduszoo> insert into feed (feed, company, id) values ({'Bagas c/ Mirtilos':13}, 'RaspBerry', 10);
+cqlsh:eduszoo> insert into feed (feed, company, id) values ({'Fruts':6}, 'Tuts', 11);
+cqlsh:eduszoo> insert into feed (feed, company, id) values ({'AnimalGomas':36}, 'HelloThere', 12);
+
+/----------- Populating table godfather -----------/
+cqlsh:eduszoo> insert into godfather (name, email, number, animal_id) values ('Jorge', 'jorge@ggmail.com', 912603958, 1);
+cqlsh:eduszoo> insert into godfather (name, email, number, animal_id) values ('Afonso', 'afonsono@ggmail.com', 913503658, 2);
+cqlsh:eduszoo> insert into godfather (name, email, number, animal_id) values ('Alcino', 'soulindo@ggmail.com', 913503958, 3);
+cqlsh:eduszoo> insert into godfather (name, email, number, animal_id) values ('Pedro', 'pedroooo@ggmail.com', 912303958, 4);
+cqlsh:eduszoo> insert into godfather (name, email, number, animal_id) values ('Norberto', 'poish@ggmail.com', 912303888, 5);
+cqlsh:eduszoo> insert into godfather (name, email, number, animal_id) values ('Rui', 'seis@ggmail.com', 912306888, 6);
+cqlsh:eduszoo> insert into godfather (name, email, number, animal_id) values ('Diogo', 'novoemail@ggmail.com', 912396898, 7);
+cqlsh:eduszoo> insert into godfather (name, email, number, animal_id) values ('Leonor', 'lanimals@ggmail.com', 914476898, 8);
+cqlsh:eduszoo> insert into godfather (name, email, number, animal_id) values ('Alberta', 'nadabeta@ggmail.com', 935476898, 9);
+cqlsh:eduszoo> insert into godfather (name, email, number, animal_id) values ('Mariana', 'mary@ggmail.com', 915579898, 10);
+cqlsh:eduszoo> insert into godfather (name, email, number, animal_id) values ('Luisa', 'adoroanimais@ggmail.com', 933579798, 11);
+cqlsh:eduszoo> insert into godfather (name, email, number, animal_id) values ('Ana', 'madrinha@ggmail.com', 913439798, 12);
