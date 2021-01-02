@@ -1,0 +1,22 @@
+// NMEC: 93107
+
+#1
+match (actor)-[:DIRECTED]->(movie)<-[:ACTED_IN]-(actor) 
+return actor.name as name, movie.title as title
+
+#2
+match (actor)-[:ACTED_IN]->(movie) 
+where movie.released > 2005 
+return collect(actor.name), movie.title
+
+#3
+match (n1)-[r]->(n2)
+with n1, n2, count(r) as c
+where c > 1
+return n1, n2
+
+#4
+match (p1)-[:REVIEWED]->(movie)<-[:REVIEWED]-(p2)
+return p1.name, p2.name, movie.title
+
+#5
