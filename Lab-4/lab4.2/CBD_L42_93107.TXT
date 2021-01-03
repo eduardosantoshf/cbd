@@ -1,5 +1,8 @@
 // NMEC: 93107
 
+// bd name: filmes
+// bd pwd: filmes#4
+
 #1
 // Encontre todos os atores que dirigiram um filme em que também atuaram e apresente o nome do ator e o título do filme.
 
@@ -75,3 +78,64 @@ match path = shortestPath(
 return length(path) as shortest_path
 order by shortest_path
 limit 1
+
+#11
+// Quais são a dimensão do caminho mais curto entre pessoas com nome Jim e pessoas com nome Kevin?
+
+match path = shortestPath(
+(a)-[*]-(b)
+)
+where a.name contains "Jim" and b.name contains "Kevin"
+return length(path) as length
+limit 1
+
+#12
+// Que pessoas têm uma distância 2 para Jim Cash (a distância entre duas pessoas é o comprimento do caminho mais curto entre eles)?
+
+match path = shortestPath(
+(a {name: "Jim Cash"})-[*..2]-(b)
+)
+where a.name <> b.name and length(path) = 2
+return b.name
+
+#13
+// Qual é a maior distância de uma pessoa para Kevin Bacon?
+
+match path = shortestPath(
+(a {name: "Kevin Bacon"})-[*]-(b)
+)
+where a.name <> b.name
+return length(path) as length
+order by length DESC
+limit 1
+
+#14
+// Qual é a maior distância entre duas pessoas?
+
+match path = shortestPath(
+(a)-[*]-(b)
+)
+where a.name <> b.name
+return length(path) as length
+order by length DESC
+limit 1
+
+#15
+// Qual é a distribuição de distâncias em pares (isto é, para a distância 1, 2, 3, ..., quantos pares de pessoas têm essa distância um do outro)?
+
+match path = shortestPath(
+(a)-[*]-(b)
+)
+where a.name <> b.name
+return length(path) as length, count(*)
+
+#16
+// Indique as 10 pessoas com menor distância média em que o caminho entre elas são relações do tipo ACTED_IN.
+
+match path = shortestPath(
+(p1)-[*]-(p2)
+)
+where p1 <> p2, (p1)-[:ACTED_IN]->(movie)<-[:ACTED_IN]-(p2)
+return p1.name, p2.name, avg(length(path)) as avg_path
+order by avg_path asc
+limit 10
