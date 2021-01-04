@@ -1,0 +1,34 @@
+// NMEC: 93107
+
+// db name: github
+// db pwd: github#4
+
+a)
+entities:
+member (id, name)
+project (name, organization)
+
+relations:
+PARTICIPATED_IN (role)
+
+b)
+load csv with headers from 'file:///git_selection.csv' as file
+merge (m: member{id:file.svn_id, name:file.real_name})
+merge (p: project{name:file.project_name})
+merge (m) -[:PARTICIPATED_IN{role:file.role_on_project}]-> (p)
+
+c)
+#1
+// Liste a informação de cada utilizador.
+
+match (m: member)
+return m
+
+#2
+// Liste o nome de cada utilizador.
+
+match (m:member) 
+return m.id, m.name
+
+#3
+// 
