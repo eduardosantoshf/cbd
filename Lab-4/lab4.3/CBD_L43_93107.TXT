@@ -31,4 +31,43 @@ match (m:member)
 return m.id, m.name
 
 #3
-// 
+// Liste a informação de cada projeto, no qual tenha participado pelo menos um utilizador.
+
+match (m:member) -[r:PARTICIPATED_IN]-> (p:project) 
+with r, p, count(m) as number_of_members 
+where r.role <> "NA" and number_of_members >= 1 
+return distinct p.name as project_name
+
+#4
+// Liste os utilizadores e total de projetos em que cada um colabora.
+
+match (m:member) -[r:PARTICIPATED_IN]-> (p:project)
+where r.role <> "NA"
+return m.id as member, count(p) as
+number_of_projects
+
+#5
+// Liste os utilizadores e do total de projetos em que cada colabora ordenados por ordem decrescente do total.
+
+match (m:member) -[r:PARTICIPATED_IN]-> (p:project)
+where r.role <> "NA"
+return m.id as member, count(p) as
+number_of_projects
+order by number_of_projects DESC
+
+#6
+// Liste projetos e total de membros em cada projeto.
+
+match (m:member) -[r:PARTICIPATED_IN]-> (p:project)
+return p.name as project, count(r) as number_of_members 
+
+#7
+// Liste projetos e total de membros com a role "Committer" em cada projeto.
+
+match (m:member) -[r:PARTICIPATED_IN]-> (p:project)
+where r.role = "Committer"
+return p.name as project, count(r) as number_of_members 
+
+#8
+// Liste todos os utilizadores que participaram nos mesmo projetos do que o utilizador "atm" (id). Mostre os atributos: nome de "atm", nome utilizador 2, nome do projeto.
+
