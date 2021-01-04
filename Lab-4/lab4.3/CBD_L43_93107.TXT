@@ -71,3 +71,13 @@ return p.name as project, count(r) as number_of_members
 #8
 // Liste todos os utilizadores que participaram nos mesmo projetos do que o utilizador "atm" (id). Mostre os atributos: nome de "atm", nome utilizador 2, nome do projeto.
 
+match (m1:member {id:"atm"}) -[r1:PARTICIPATED_IN]-> (p:project) <-[r2:PARTICIPATED_IN]- (m2:member)
+where r1.role <> "NA" and r2.role <> "NA"
+return distinct m1.name as member_1, m2.name as member_2, p.name as project_name
+
+#9
+// Liste todos os utilizadores que participaram com a role "Committer" em projetos em que o utilizador "atm" (id1) participou com a role "PMC".
+
+match (m1:member {id:"atm"}) -[r1:PARTICIPATED_IN]-> (p:project) <-[r2:PARTICIPATED_IN]- (m2:member)
+where r1.role = "PMC" and r2.role = "Committer"
+return distinct m2.name as member_2
