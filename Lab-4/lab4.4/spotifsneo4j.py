@@ -1,5 +1,6 @@
-from neo4j import GraphDatabase
-
+#from neo4j import GraphDatabase
+#from py2neo import Graph
+'''
 class SpotifsNeo4j:
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth = (user, password))
@@ -32,3 +33,22 @@ if __name__ == "__main__":
     connecter.close()
 
     #with open("../CBD_L44_output.txt", "w") as printer:
+'''
+
+#graph = Graph("bolt://localhost:7474")
+
+from neo4j import GraphDatabase
+
+uri = "bolt://localhost:11005"
+driver = GraphDatabase.driver(uri, auth=("neo4j", "spotifs"))
+
+
+def test_function(tx):
+    for record in tx.run("MATCH (n)"
+           "RETURN n"):
+        print(record)
+
+with driver.session() as session:
+    session.read_transaction(test_function)
+    
+driver.close()
